@@ -11,6 +11,8 @@ import {
   insertRiskAssessmentSchema,
   insertZapScanSchema,
   insertVulnerabilitySchema,
+  insertComplianceQuestionSchema,
+  insertComplianceResponseSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
@@ -309,6 +311,126 @@ export async function registerRoutes(
       res.status(201).json(vulnerability);
     } catch (error) {
       res.status(400).json({ error: "Invalid vulnerability data" });
+    }
+  });
+
+  // Compliance Questions
+  app.get("/api/compliance/questions", async (_req, res) => {
+    try {
+      const questions = await storage.getComplianceQuestions();
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch compliance questions" });
+    }
+  });
+
+  app.get("/api/compliance/questions/framework/:frameworkId", async (req, res) => {
+    try {
+      const questions = await storage.getComplianceQuestionsByFramework(req.params.frameworkId);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch framework questions" });
+    }
+  });
+
+  app.get("/api/compliance/questions/:id", async (req, res) => {
+    try {
+      const question = await storage.getComplianceQuestion(req.params.id);
+      if (!question) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+      res.json(question);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch question" });
+    }
+  });
+
+  app.post("/api/compliance/questions", async (req, res) => {
+    try {
+      const data = insertComplianceQuestionSchema.parse(req.body);
+      const question = await storage.createComplianceQuestion(data);
+      res.status(201).json(question);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid question data" });
+    }
+  });
+
+  // Compliance Responses
+  app.get("/api/compliance/responses", async (_req, res) => {
+    try {
+      const responses = await storage.getComplianceResponses();
+      res.json(responses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch compliance responses" });
+    }
+  });
+
+  app.get("/api/compliance/responses/framework/:frameworkId", async (req, res) => {
+    try {
+      const responses = await storage.getComplianceResponsesByFramework(req.params.frameworkId);
+      res.json(responses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch framework responses" });
+    }
+  });
+
+  app.get("/api/compliance/responses/:id", async (req, res) => {
+    try {
+      const response = await storage.getComplianceResponse(req.params.id);
+      if (!response) {
+        return res.status(404).json({ error: "Response not found" });
+      }
+      res.json(response);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch response" });
+    }
+  });
+
+  app.post("/api/compliance/responses", async (req, res) => {
+    try {
+      const data = insertComplianceResponseSchema.parse(req.body);
+      const response = await storage.upsertComplianceResponse(data);
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid response data" });
+    }
+  });
+
+  app.patch("/api/compliance/responses/:id", async (req, res) => {
+    try {
+      const response = await storage.updateComplianceResponse(req.params.id, req.body);
+      if (!response) {
+        return res.status(404).json({ error: "Response not found" });
+      }
+      res.json(response);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update response" });
+    }
+  });
+
+  // Update Compliance Control
+  app.patch("/api/compliance/controls/:id", async (req, res) => {
+    try {
+      const control = await storage.updateComplianceControl(req.params.id, req.body);
+      if (!control) {
+        return res.status(404).json({ error: "Control not found" });
+      }
+      res.json(control);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update control" });
+    }
+  });
+
+  // Update Compliance Framework
+  app.patch("/api/compliance/frameworks/:id", async (req, res) => {
+    try {
+      const framework = await storage.updateComplianceFramework(req.params.id, req.body);
+      if (!framework) {
+        return res.status(404).json({ error: "Framework not found" });
+      }
+      res.json(framework);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update framework" });
     }
   });
 
