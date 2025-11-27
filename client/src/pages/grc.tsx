@@ -231,18 +231,18 @@ export default function GRC() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">GRC Compliance</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">GRC Compliance</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Governance, Risk, and Compliance management
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {frameworks.length === 0 ? (
-          <Card className="p-6 col-span-3">
-            <div className="text-center text-muted-foreground py-8">
+          <Card className="p-4 sm:p-6 col-span-full">
+            <div className="text-center text-muted-foreground py-6 sm:py-8">
               <p className="text-sm">No compliance frameworks available</p>
             </div>
           </Card>
@@ -259,31 +259,31 @@ export default function GRC() {
             return (
               <Card
                 key={framework.id}
-                className={`p-6 hover-elevate cursor-pointer ${
+                className={`p-4 sm:p-6 hover-elevate cursor-pointer ${
                   selectedFramework === framework.id ? "ring-2 ring-primary" : ""
                 }`}
                 onClick={() => setSelectedFramework(framework.id)}
                 data-testid={`framework-card-${framework.id}`}
               >
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/10">
-                      <ClipboardCheck className="h-6 w-6 text-primary" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-md bg-primary/10 shrink-0">
+                      <ClipboardCheck className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                     </div>
                     <Badge variant="secondary" className="text-xs">
                       {framework.version || "v1.0"}
                     </Badge>
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold">{framework.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <h3 className="text-base sm:text-lg font-semibold">{framework.name}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                       {framework.description}
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-muted-foreground">Controls</span>
                       <span className="font-semibold font-mono">
                         {completionPercentage.toFixed(0)}%
@@ -292,7 +292,7 @@ export default function GRC() {
                     <Progress value={completionPercentage} className="h-2" />
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>
-                        {framework.implementedControls} / {framework.totalControls} implemented
+                        {framework.implementedControls} / {framework.totalControls}
                       </span>
                     </div>
                   </div>
@@ -325,26 +325,27 @@ export default function GRC() {
 
       {selectedFramework && (
         <>
-          <Card className="p-6">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <Card className="p-3 sm:p-6">
+            <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 sm:gap-4">
               <div>
-                <h3 className="text-lg font-medium">Compliance Questionnaire</h3>
-                <p className="text-sm text-muted-foreground">
-                  Answer questions to update your compliance standing for {selectedFrameworkData?.name}
+                <h3 className="text-base sm:text-lg font-medium">Compliance Questionnaire</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  Update compliance for {selectedFrameworkData?.name}
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-sm font-medium">{answeredCount} / {frameworkQuestions.length}</p>
-                  <p className="text-xs text-muted-foreground">Questions Answered</p>
+                  <p className="text-xs text-muted-foreground">Answered</p>
                 </div>
                 <Button 
                   onClick={handleStartQuestionnaire}
                   disabled={frameworkQuestions.length === 0}
+                  size="sm"
                   data-testid="button-start-questionnaire"
                 >
-                  <FileQuestion className="h-4 w-4 mr-2" />
-                  {answeredCount > 0 ? "Continue" : "Start"} Questionnaire
+                  <FileQuestion className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{answeredCount > 0 ? "Continue" : "Start"}</span>
                 </Button>
               </div>
             </div>
@@ -377,17 +378,17 @@ export default function GRC() {
             )}
           </Card>
 
-          <Card className="p-6">
-            <div className="mb-6 flex items-center justify-between">
+          <Card className="p-3 sm:p-6">
+            <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
               <div>
-                <h3 className="text-lg font-medium">Compliance Controls</h3>
-                <p className="text-sm text-muted-foreground">
-                  Detailed control implementation status
+                <h3 className="text-base sm:text-lg font-medium">Compliance Controls</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  Control implementation status
                 </p>
               </div>
-              <Button variant="outline" size="default" data-testid="button-export-report">
+              <Button variant="outline" size="sm" data-testid="button-export-report">
                 <Download className="h-4 w-4 mr-2" />
-                Export Report
+                Export
               </Button>
             </div>
 

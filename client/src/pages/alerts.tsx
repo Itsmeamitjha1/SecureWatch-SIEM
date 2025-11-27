@@ -111,76 +111,76 @@ export default function Alerts() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Alert Management</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Alert Management</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Monitor and respond to security alerts
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
-              <AlertTriangle className="h-5 w-5 text-primary" />
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-primary/10 shrink-0">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-total-alerts">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-total-alerts">
                 {alertCounts.total}
               </p>
-              <p className="text-xs text-muted-foreground">Total Alerts</p>
+              <p className="text-xs text-muted-foreground truncate">Total</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-2/10">
-              <Clock className="h-5 w-5 text-chart-2" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-2/10 shrink-0">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-chart-2" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-open-alerts">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-open-alerts">
                 {alertCounts.open}
               </p>
-              <p className="text-xs text-muted-foreground">Open</p>
+              <p className="text-xs text-muted-foreground truncate">Open</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-5/10">
-              <AlertTriangle className="h-5 w-5 text-chart-5" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-5/10 shrink-0">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-inprogress-alerts">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-inprogress-alerts">
                 {alertCounts.inProgress}
               </p>
-              <p className="text-xs text-muted-foreground">In Progress</p>
+              <p className="text-xs text-muted-foreground truncate">In Progress</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-500/10">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-green-500/10 shrink-0">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-resolved-alerts">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-resolved-alerts">
                 {alertCounts.resolved}
               </p>
-              <p className="text-xs text-muted-foreground">Resolved</p>
+              <p className="text-xs text-muted-foreground truncate">Resolved</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <Card className="p-6">
-        <div className="mb-6 flex items-center gap-4">
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6 flex flex-wrap items-center gap-2 sm:gap-4">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40" data-testid="select-status-filter">
+            <SelectTrigger className="w-full sm:w-36" data-testid="select-status-filter">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -193,7 +193,7 @@ export default function Alerts() {
           </Select>
 
           <Select value={severityFilter} onValueChange={setSeverityFilter}>
-            <SelectTrigger className="w-40" data-testid="select-severity-filter">
+            <SelectTrigger className="w-full sm:w-36" data-testid="select-severity-filter">
               <SelectValue placeholder="Severity" />
             </SelectTrigger>
             <SelectContent>
@@ -206,7 +206,7 @@ export default function Alerts() {
           </Select>
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

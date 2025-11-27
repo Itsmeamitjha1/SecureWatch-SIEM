@@ -78,50 +78,50 @@ export default function Incidents() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Incident Response</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Incident Response</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Track and manage security incidents
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
-              <Bug className="h-5 w-5 text-primary" />
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-primary/10 shrink-0">
+              <Bug className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-total-incidents">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-total-incidents">
                 {incidentCounts.total}
               </p>
-              <p className="text-xs text-muted-foreground">Total Incidents</p>
+              <p className="text-xs text-muted-foreground truncate">Total</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-2/10">
-              <AlertCircle className="h-5 w-5 text-chart-2" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-2/10 shrink-0">
+              <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-chart-2" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-open-incidents">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-open-incidents">
                 {incidentCounts.open}
               </p>
-              <p className="text-xs text-muted-foreground">Open</p>
+              <p className="text-xs text-muted-foreground truncate">Open</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-5/10">
-              <Clock className="h-5 w-5 text-chart-5" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-5/10 shrink-0">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-inprogress-incidents">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-inprogress-incidents">
                 {incidentCounts.inProgress}
               </p>
               <p className="text-xs text-muted-foreground">In Progress</p>
@@ -129,30 +129,30 @@ export default function Incidents() {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-500/10">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-green-500/10 shrink-0">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-resolved-incidents">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-resolved-incidents">
                 {incidentCounts.resolved}
               </p>
-              <p className="text-xs text-muted-foreground">Resolved</p>
+              <p className="text-xs text-muted-foreground truncate">Resolved</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <Card className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-medium">Active Incidents</h3>
-          <p className="text-sm text-muted-foreground">
-            Monitor ongoing security incidents and response status
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-medium">Active Incidents</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Monitor ongoing security incidents
           </p>
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

@@ -58,31 +58,31 @@ export default function Reports() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Reports</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Reports</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Generate compliance and security reports
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
         {reportTypes.map((report) => (
-          <Card key={report.id} className="p-6" data-testid={`report-card-${report.id}`}>
-            <div className="flex items-start gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-md ${getReportBgColor(report.id)}`}>
-                <report.icon className={`h-6 w-6 ${report.iconColor}`} />
+          <Card key={report.id} className="p-4 sm:p-6" data-testid={`report-card-${report.id}`}>
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-md shrink-0 ${getReportBgColor(report.id)}`}>
+                <report.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${report.iconColor}`} />
               </div>
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
                 <div>
-                  <h3 className="text-lg font-medium">{report.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <h3 className="text-base sm:text-lg font-medium">{report.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">
                     {report.description}
                   </p>
                 </div>
-                <Button variant="outline" size="default" data-testid={`button-generate-${report.id}`}>
+                <Button variant="outline" size="sm" data-testid={`button-generate-${report.id}`}>
                   <Download className="h-4 w-4 mr-2" />
-                  Generate Report
+                  Generate
                 </Button>
               </div>
             </div>
@@ -90,11 +90,11 @@ export default function Reports() {
         ))}
       </div>
 
-      <Card className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-medium">Compliance Framework Reports</h3>
-          <p className="text-sm text-muted-foreground">
-            Generate detailed reports for each compliance framework
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-medium">Framework Reports</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Generate reports for each framework
           </p>
         </div>
 
@@ -113,35 +113,31 @@ export default function Reports() {
               return (
                 <div
                   key={framework.id}
-                  className="flex items-center justify-between gap-4 rounded-md border border-border p-4 hover-elevate"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 rounded-md border border-border p-3 sm:p-4 hover-elevate"
                   data-testid={`framework-report-${framework.id}`}
                 >
-                  <div className="flex items-center gap-4 flex-1">
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                    <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <h4 className="text-sm font-medium">{framework.name}</h4>
                         <Badge variant="secondary" className="text-xs">
-                          {completionPercentage.toFixed(0)}% Complete
+                          {completionPercentage.toFixed(0)}%
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {framework.implementedControls} of {framework.totalControls} controls implemented
-                        {framework.lastAuditDate && (
-                          <span className="ml-2">
-                            • Last audit: {format(new Date(framework.lastAuditDate), "MMM dd, yyyy")}
-                          </span>
-                        )}
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
+                        {framework.implementedControls} / {framework.totalControls} controls
                       </p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
-                    size="default"
+                    size="sm"
+                    className="shrink-0"
                     data-testid={`button-download-${framework.id}`}
                   >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
+                    <Download className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Download</span>
                   </Button>
                 </div>
               );
@@ -150,22 +146,22 @@ export default function Reports() {
         </div>
       </Card>
 
-      <Card className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-medium">Scheduled Reports</h3>
-          <p className="text-sm text-muted-foreground">
-            Configure automated report generation and distribution
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-medium">Scheduled Reports</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Configure automated report generation
           </p>
         </div>
 
-        <div className="flex h-48 items-center justify-center rounded-md border border-dashed">
-          <div className="text-center">
-            <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h4 className="mt-4 text-sm font-medium">No Scheduled Reports</h4>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Set up automated reports to receive regular updates
+        <div className="flex h-40 sm:h-48 items-center justify-center rounded-md border border-dashed">
+          <div className="text-center px-4">
+            <Calendar className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground" />
+            <h4 className="mt-3 sm:mt-4 text-sm font-medium">No Scheduled Reports</h4>
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-muted-foreground">
+              Set up automated reports
             </p>
-            <Button className="mt-4" variant="outline" data-testid="button-schedule-report">
+            <Button className="mt-3 sm:mt-4" variant="outline" size="sm" data-testid="button-schedule-report">
               Schedule Report
             </Button>
           </div>

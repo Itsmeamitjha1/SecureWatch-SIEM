@@ -114,8 +114,18 @@ Preferred communication style: Simple, everyday language.
 **Spacing & Layout**
 - 12-column grid system for dashboard widget placement
 - Fixed 16rem (256px) sidebar width with 3rem icon-only collapsed state
-- Consistent padding units: p-4 to p-6 for components, px-6 to px-8 for containers
-- Responsive breakpoints using Tailwind's md/lg prefixes
+- Consistent padding units: p-3 sm:p-4 to sm:p-6 for components (mobile-first)
+- Responsive breakpoints: sm (640px), md (768px), lg (1024px)
+
+**Mobile Responsiveness (Nov 2024)**
+- Mobile-first responsive design across all pages
+- Stat cards: grid-cols-2 sm:grid-cols-2 lg:grid-cols-4
+- Tables: overflow-x-auto for horizontal scrolling on mobile
+- Typography: text-xl sm:text-2xl for headings
+- Icon sizes: h-4 w-4 sm:h-5 sm:w-5 for responsive icons
+- AI Analysis: Collapsible session panel with toggle button on mobile
+- Cards: p-3 sm:p-4 to sm:p-6 responsive padding
+- Dialogs: max-w-3xl sm:max-w-4xl responsive width constraints
 
 **Typography Scale**
 - Page Titles: 2xl (24px) semibold

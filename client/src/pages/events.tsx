@@ -91,31 +91,31 @@ function EventDetailDialog({ event, open, onOpenChange }: EventDetailProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-3 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-primary" />
-            Event Details
-            <Badge variant={getSeverityVariant(event.severity)} className="ml-2">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
+            <span className="truncate">Event Details</span>
+            <Badge variant={getSeverityVariant(event.severity)} className="ml-auto shrink-0">
               {event.severity}
             </Badge>
           </DialogTitle>
-          <DialogDescription>
-            Detailed security event information including network data, threat intelligence, and raw logs
+          <DialogDescription className="text-xs sm:text-sm">
+            Security event information and threat intelligence
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="flex-1 min-h-0">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-            <TabsTrigger value="network" data-testid="tab-network">Network</TabsTrigger>
-            <TabsTrigger value="threat" data-testid="tab-threat">Threat Intel</TabsTrigger>
-            <TabsTrigger value="raw" data-testid="tab-raw">Raw Log</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm px-1 sm:px-3" data-testid="tab-overview">Overview</TabsTrigger>
+            <TabsTrigger value="network" className="text-xs sm:text-sm px-1 sm:px-3" data-testid="tab-network">Network</TabsTrigger>
+            <TabsTrigger value="threat" className="text-xs sm:text-sm px-1 sm:px-3" data-testid="tab-threat">Threat</TabsTrigger>
+            <TabsTrigger value="raw" className="text-xs sm:text-sm px-1 sm:px-3" data-testid="tab-raw">Raw</TabsTrigger>
           </TabsList>
 
-          <ScrollArea className="flex-1 mt-4">
-            <TabsContent value="overview" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+          <ScrollArea className="flex-1 mt-3 sm:mt-4">
+            <TabsContent value="overview" className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-4">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -310,8 +310,8 @@ function EventDetailDialog({ event, open, onOpenChange }: EventDetailProps) {
               </Card>
             </TabsContent>
 
-            <TabsContent value="threat" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <TabsContent value="threat" className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Card className="p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <AlertTriangle className="h-4 w-4 text-orange-500" />
@@ -512,20 +512,20 @@ export default function Events() {
   const eventTypes = Array.from(new Set(events.map((e) => e.eventType)));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Security Events</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Security Events</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Monitor and analyze security events in real-time
         </p>
       </div>
 
-      <Card className="p-6">
-        <div className="mb-6 flex flex-wrap items-center gap-4">
-          <div className="relative flex-1">
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-4">
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search events, tactics, techniques..."
+              placeholder="Search events..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
@@ -533,41 +533,43 @@ export default function Events() {
             />
           </div>
 
-          <Select value={severityFilter} onValueChange={setSeverityFilter}>
-            <SelectTrigger className="w-40" data-testid="select-severity-filter">
-              <SelectValue placeholder="Severity" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Severities</SelectItem>
-              <SelectItem value="Critical">Critical</SelectItem>
-              <SelectItem value="High">High</SelectItem>
-              <SelectItem value="Medium">Medium</SelectItem>
-              <SelectItem value="Low">Low</SelectItem>
-              <SelectItem value="Info">Info</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap gap-2">
+            <Select value={severityFilter} onValueChange={setSeverityFilter}>
+              <SelectTrigger className="w-full sm:w-32" data-testid="select-severity-filter">
+                <SelectValue placeholder="Severity" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Severities</SelectItem>
+                <SelectItem value="Critical">Critical</SelectItem>
+                <SelectItem value="High">High</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+                <SelectItem value="Info">Info</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-48" data-testid="select-type-filter">
-              <SelectValue placeholder="Event Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              {eventTypes.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-full sm:w-36" data-testid="select-type-filter">
+                <SelectValue placeholder="Event Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                {eventTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Button variant="outline" size="default" data-testid="button-export">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+            <Button variant="outline" size="default" className="shrink-0" data-testid="button-export">
+              <Download className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Export</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -641,11 +643,11 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+        <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-xs sm:text-sm text-muted-foreground">
           <p>
             Showing {filteredEvents.length} of {events.length} events
           </p>
-          <p className="text-xs">Click on a row to view detailed event information</p>
+          <p className="text-xs hidden sm:block">Click on a row to view details</p>
         </div>
       </Card>
 

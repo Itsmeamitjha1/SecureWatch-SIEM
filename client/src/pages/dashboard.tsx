@@ -104,22 +104,22 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Security Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Security Dashboard</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Real-time security monitoring and analytics
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-6">
-          <div className="flex items-center justify-between space-y-0 pb-2">
-            <p className="text-sm font-medium">Critical Alerts</p>
-            <AlertTriangle className="h-4 w-4 text-destructive" />
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+        <Card className="p-3 sm:p-6">
+          <div className="flex items-center justify-between gap-2 pb-2">
+            <p className="text-xs sm:text-sm font-medium">Critical Alerts</p>
+            <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
           </div>
           <div className="space-y-1">
-            <p className="text-3xl font-semibold font-mono" data-testid="text-critical-alerts">
+            <p className="text-2xl sm:text-3xl font-semibold font-mono" data-testid="text-critical-alerts">
               {criticalAlerts}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -128,13 +128,13 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between space-y-0 pb-2">
-            <p className="text-sm font-medium">Active Incidents</p>
-            <Activity className="h-4 w-4 text-chart-2" />
+        <Card className="p-3 sm:p-6">
+          <div className="flex items-center justify-between gap-2 pb-2">
+            <p className="text-xs sm:text-sm font-medium">Active Incidents</p>
+            <Activity className="h-4 w-4 text-chart-2 shrink-0" />
           </div>
           <div className="space-y-1">
-            <p className="text-3xl font-semibold font-mono" data-testid="text-active-incidents">
+            <p className="text-2xl sm:text-3xl font-semibold font-mono" data-testid="text-active-incidents">
               {activeIncidents}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -143,13 +143,13 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between space-y-0 pb-2">
-            <p className="text-sm font-medium">Security Events</p>
-            <Shield className="h-4 w-4 text-chart-1" />
+        <Card className="p-3 sm:p-6">
+          <div className="flex items-center justify-between gap-2 pb-2">
+            <p className="text-xs sm:text-sm font-medium">Security Events</p>
+            <Shield className="h-4 w-4 text-chart-1 shrink-0" />
           </div>
           <div className="space-y-1">
-            <p className="text-3xl font-semibold font-mono" data-testid="text-security-events">
+            <p className="text-2xl sm:text-3xl font-semibold font-mono" data-testid="text-security-events">
               {events.length}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -158,13 +158,13 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between space-y-0 pb-2">
-            <p className="text-sm font-medium">Scans Completed</p>
-            <TrendingUp className="h-4 w-4 text-chart-5" />
+        <Card className="p-3 sm:p-6">
+          <div className="flex items-center justify-between gap-2 pb-2">
+            <p className="text-xs sm:text-sm font-medium">Scans Completed</p>
+            <TrendingUp className="h-4 w-4 text-chart-5 shrink-0" />
           </div>
           <div className="space-y-1">
-            <p className="text-3xl font-semibold font-mono" data-testid="text-scans-completed">
+            <p className="text-2xl sm:text-3xl font-semibold font-mono" data-testid="text-scans-completed">
               {recentScans}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -174,10 +174,10 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-6">
-          <h3 className="mb-4 text-lg font-medium">Event Trend</h3>
-          <ResponsiveContainer width="100%" height={250}>
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2">
+        <Card className="p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Event Trend</h3>
+          <ResponsiveContainer width="100%" height={200} className="sm:h-[250px]">
             <AreaChart data={eventTrend}>
               <defs>
                 <linearGradient id="colorEvents" x1="0" y1="0" x2="0" y2="1">
@@ -206,13 +206,13 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="mb-4 text-lg font-medium">Alert Severity Distribution</h3>
-          <ResponsiveContainer width="100%" height={250}>
+        <Card className="p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Alert Severity</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={severityDistribution}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="severity" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <XAxis dataKey="severity" stroke="hsl(var(--muted-foreground))" fontSize={10} tick={{ fontSize: 10 }} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "hsl(var(--card))",
@@ -226,19 +226,19 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-6">
-          <h3 className="mb-4 text-lg font-medium">Event Type Distribution</h3>
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2">
+        <Card className="p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Event Types</h3>
           {pieData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={(entry) => entry.name}
-                  outerRadius={80}
+                  label={({ name }) => name.length > 10 ? name.substring(0, 10) + '...' : name}
+                  outerRadius={60}
                   fill="hsl(var(--chart-1))"
                   dataKey="value"
                 >
@@ -259,35 +259,35 @@ export default function Dashboard() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
+            <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
               No event data available
             </div>
           )}
         </Card>
 
-        <Card className="p-6">
-          <h3 className="mb-4 text-lg font-medium">Recent Alerts</h3>
-          <div className="space-y-3">
+        <Card className="p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Recent Alerts</h3>
+          <div className="space-y-2 sm:space-y-3">
             {alerts.slice(0, 5).map((alert) => (
               <div
                 key={alert.id}
-                className="flex items-start gap-3 rounded-md border border-border p-3 hover-elevate"
+                className="flex items-start gap-2 sm:gap-3 rounded-md border border-border p-2 sm:p-3 hover-elevate"
                 data-testid={`alert-item-${alert.id}`}
               >
-                <AlertTriangle className="mt-0.5 h-4 w-4 text-chart-2" />
-                <div className="flex-1 space-y-1">
+                <AlertTriangle className="mt-0.5 h-4 w-4 text-chart-2 shrink-0" />
+                <div className="flex-1 space-y-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium">{alert.title}</p>
+                    <p className="text-xs sm:text-sm font-medium truncate">{alert.title}</p>
                     <Badge
                       variant={
                         alert.severity === "Critical" ? "destructive" : "secondary"
                       }
-                      className="text-xs"
+                      className="text-xs shrink-0"
                     >
                       {alert.severity}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground">{alert.category}</p>
+                  <p className="text-xs text-muted-foreground truncate">{alert.category}</p>
                 </div>
               </div>
             ))}

@@ -158,20 +158,22 @@ export default function AiAnalysis() {
     });
   };
 
+  const [showSessions, setShowSessions] = useState(false);
+
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold flex items-center gap-2">
-          <Bot className="h-6 w-6 text-primary" />
+      <div className="mb-3 sm:mb-4">
+        <h1 className="text-xl sm:text-2xl font-semibold flex items-center gap-2">
+          <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
           AI Security Analyst
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Ask questions about security events and get AI-powered insights
         </p>
       </div>
 
-      <div className="flex-1 flex gap-4 min-h-0">
-        <Card className="w-64 shrink-0 flex flex-col">
+      <div className="flex-1 flex flex-col md:flex-row gap-3 sm:gap-4 min-h-0">
+        <Card className={`md:w-64 shrink-0 flex flex-col ${showSessions ? 'flex' : 'hidden md:flex'}`}>
           <div className="p-4 border-b">
             <Button
               onClick={startNewSession}
@@ -228,24 +230,34 @@ export default function AiAnalysis() {
         </Card>
 
         <Card className="flex-1 flex flex-col min-w-0">
-          <div className="p-4 border-b flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <span className="font-medium">
+          <div className="p-3 sm:p-4 border-b flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 min-w-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden shrink-0"
+                onClick={() => setShowSessions(!showSessions)}
+                data-testid="button-toggle-sessions"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
+              <span className="font-medium text-sm sm:text-base truncate">
                 {currentSessionId
-                  ? sessions.find((s) => s.id === currentSessionId)?.title || "Analysis Session"
-                  : "Start a New Analysis"}
+                  ? sessions.find((s) => s.id === currentSessionId)?.title || "Analysis"
+                  : "New Analysis"}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
+                className="h-8 px-2 sm:px-3"
                 data-testid="button-toggle-filters"
               >
-                <Filter className="h-4 w-4 mr-1" />
-                Filters
+                <Filter className="h-4 w-4 sm:mr-1" />
+                <span className="hidden sm:inline">Filters</span>
                 {showFilters ? (
                   <ChevronUp className="h-3 w-3 ml-1" />
                 ) : (
@@ -256,6 +268,7 @@ export default function AiAnalysis() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="h-8 w-8"
                   onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/ai/sessions", currentSessionId, "messages"] })}
                   data-testid="button-refresh-messages"
                 >
@@ -266,40 +279,40 @@ export default function AiAnalysis() {
           </div>
 
           {showFilters && (
-            <div className="p-4 border-b bg-muted/30">
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Filter events by:</span>
+            <div className="p-3 sm:p-4 border-b bg-muted/30">
+              <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4">
+                <span className="text-xs sm:text-sm text-muted-foreground">Filter by:</span>
+                <div className="flex flex-wrap gap-2">
+                  <Select value={selectedSeverity} onValueChange={setSelectedSeverity}>
+                    <SelectTrigger className="w-28 sm:w-36 h-8" data-testid="select-severity-filter">
+                      <SelectValue placeholder="Severity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Severities</SelectItem>
+                      <SelectItem value="Critical">Critical</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedEventType} onValueChange={setSelectedEventType}>
+                    <SelectTrigger className="w-28 sm:w-36 h-8" data-testid="select-type-filter">
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      {eventTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Select value={selectedSeverity} onValueChange={setSelectedSeverity}>
-                  <SelectTrigger className="w-36" data-testid="select-severity-filter">
-                    <SelectValue placeholder="Severity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Severities</SelectItem>
-                    <SelectItem value="Critical">Critical</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Low">Low</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={selectedEventType} onValueChange={setSelectedEventType}>
-                  <SelectTrigger className="w-44" data-testid="select-type-filter">
-                    <SelectValue placeholder="Event Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    {eventTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
                 {(selectedSeverity !== "all" || selectedEventType !== "all") && (
-                  <Badge variant="secondary" className="gap-1">
+                  <Badge variant="secondary" className="gap-1 text-xs">
                     <Target className="h-3 w-3" />
-                    Filtering active
+                    Active
                   </Badge>
                 )}
               </div>

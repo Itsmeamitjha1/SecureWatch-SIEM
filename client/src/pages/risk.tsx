@@ -75,77 +75,77 @@ export default function Risk() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Risk Assessment</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-semibold">Risk Assessment</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Identify and manage organizational risks
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-destructive/10">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-destructive/10 shrink-0">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-critical-risks">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-critical-risks">
                 {riskCounts.critical}
               </p>
-              <p className="text-xs text-muted-foreground">Critical</p>
+              <p className="text-xs text-muted-foreground truncate">Critical</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-2/10">
-              <TrendingUp className="h-5 w-5 text-chart-2" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-2/10 shrink-0">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-chart-2" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-high-risks">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-high-risks">
                 {riskCounts.high}
               </p>
-              <p className="text-xs text-muted-foreground">High</p>
+              <p className="text-xs text-muted-foreground truncate">High</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-5/10">
-              <TrendingUp className="h-5 w-5 text-chart-5" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-5/10 shrink-0">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-medium-risks">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-medium-risks">
                 {riskCounts.medium}
               </p>
-              <p className="text-xs text-muted-foreground">Medium</p>
+              <p className="text-xs text-muted-foreground truncate">Medium</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-1/10">
-              <TrendingUp className="h-5 w-5 text-chart-1" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-1/10 shrink-0">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-chart-1" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-low-risks">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-low-risks">
                 {riskCounts.low}
               </p>
-              <p className="text-xs text-muted-foreground">Low</p>
+              <p className="text-xs text-muted-foreground truncate">Low</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <Card className="p-6">
-        <div className="mb-6">
-          <h3 className="text-lg font-medium">Risk Heat Map</h3>
-          <p className="text-sm text-muted-foreground">
-            Likelihood vs. Impact matrix visualization
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-medium">Risk Heat Map</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Likelihood vs. Impact matrix
           </p>
         </div>
 
@@ -196,38 +196,38 @@ export default function Risk() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded bg-destructive"></div>
-              <span className="text-xs text-muted-foreground">Critical (15-25)</span>
+        <div className="mt-4 sm:mt-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-destructive"></div>
+              <span className="text-xs text-muted-foreground">Critical</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded bg-chart-2"></div>
-              <span className="text-xs text-muted-foreground">High (10-14)</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-chart-2"></div>
+              <span className="text-xs text-muted-foreground">High</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded bg-chart-5"></div>
-              <span className="text-xs text-muted-foreground">Medium (6-9)</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-chart-5"></div>
+              <span className="text-xs text-muted-foreground">Medium</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded bg-chart-1"></div>
-              <span className="text-xs text-muted-foreground">Low (1-5)</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 rounded bg-chart-1"></div>
+              <span className="text-xs text-muted-foreground">Low</span>
             </div>
           </div>
         </div>
       </Card>
 
-      <Card className="p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-medium">Risk Register</h3>
-          <Button variant="outline" size="default" data-testid="button-export-risks">
+      <Card className="p-3 sm:p-6">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+          <h3 className="text-base sm:text-lg font-medium">Risk Register</h3>
+          <Button variant="outline" size="sm" data-testid="button-export-risks">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>

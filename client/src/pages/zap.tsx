@@ -133,16 +133,17 @@ export default function ZAP() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">OWASP ZAP Scanner</h1>
-          <p className="text-sm text-muted-foreground">
-            Web application security testing and vulnerability detection
+          <h1 className="text-xl sm:text-2xl font-semibold">OWASP ZAP Scanner</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Security testing and vulnerability detection
           </p>
         </div>
         <Button
           onClick={() => setShowNewScanDialog(true)}
+          className="shrink-0"
           data-testid="button-new-scan"
         >
           <Play className="h-4 w-4 mr-2" />
@@ -150,28 +151,28 @@ export default function ZAP() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
-              <Shield className="h-5 w-5 text-primary" />
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-primary/10 shrink-0">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-total-scans">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-total-scans">
                 {scanCounts.total}
               </p>
-              <p className="text-xs text-muted-foreground">Total Scans</p>
+              <p className="text-xs text-muted-foreground truncate">Total</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-500/10">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-green-500/10 shrink-0">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-completed-scans">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-completed-scans">
                 {scanCounts.completed}
               </p>
               <p className="text-xs text-muted-foreground">Completed</p>
@@ -179,38 +180,38 @@ export default function ZAP() {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-5/10">
-              <Clock className="h-5 w-5 text-chart-5" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-5/10 shrink-0">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-running-scans">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-running-scans">
                 {scanCounts.running}
               </p>
-              <p className="text-xs text-muted-foreground">Running</p>
+              <p className="text-xs text-muted-foreground truncate">Running</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-chart-1/10">
-              <AlertTriangle className="h-5 w-5 text-chart-1" />
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md bg-chart-1/10 shrink-0">
+              <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-chart-1" />
             </div>
-            <div>
-              <p className="text-2xl font-semibold font-mono" data-testid="text-pending-scans">
+            <div className="min-w-0">
+              <p className="text-xl sm:text-2xl font-semibold font-mono" data-testid="text-pending-scans">
                 {scanCounts.pending}
               </p>
-              <p className="text-xs text-muted-foreground">Pending</p>
+              <p className="text-xs text-muted-foreground truncate">Pending</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="md:col-span-1 p-6">
-          <h3 className="mb-4 text-lg font-medium">Recent Scans</h3>
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-1 p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Recent Scans</h3>
           <div className="space-y-2">
             {scans.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">No scans yet</div>
@@ -251,14 +252,14 @@ export default function ZAP() {
           </div>
         </Card>
 
-        <Card className="md:col-span-2 p-6">
-          <h3 className="mb-4 text-lg font-medium">Vulnerability Findings</h3>
+        <Card className="lg:col-span-2 p-3 sm:p-6">
+          <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-medium">Vulnerability Findings</h3>
           {!selectedScan ? (
-            <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
+            <div className="flex h-48 sm:h-64 items-center justify-center text-sm text-muted-foreground">
               Select a scan to view vulnerabilities
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
