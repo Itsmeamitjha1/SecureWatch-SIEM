@@ -47,6 +47,8 @@ DATABASE_URL=postgresql://username:password@host:port/database
 SESSION_SECRET=your-session-secret-here
 REPL_ID=your-replit-app-id
 ISSUER_URL=https://replit.com/oidc
+PORT="Port Number"
+HOST="Host Number Like: 127.0.0.1"
 ```
 
 ## Installation
