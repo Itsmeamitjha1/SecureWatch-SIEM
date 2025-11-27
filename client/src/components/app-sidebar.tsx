@@ -28,6 +28,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const menuItems = [
   {
@@ -73,8 +75,18 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, isAuthenticated, isLoading } = useAuth();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/logout");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      setLocation("/");
+    },
+  });
 
   const displayName = user?.firstName && user?.lastName 
     ? `${user.firstName} ${user.lastName}` 
@@ -163,14 +175,13 @@ export function AppSidebar() {
             <Button 
               variant="outline" 
               size="sm" 
-              className="w-full justify-start" 
-              asChild
+              className="w-full justify-start"
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
               data-testid="button-sidebar-logout"
             >
-              <a href="/api/logout">
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
-              </a>
+              <LogOut className="mr-2 h-4 w-4" />
+              {logoutMutation.isPending ? "Signing out..." : "Sign Out"}
             </Button>
           </div>
         ) : (
