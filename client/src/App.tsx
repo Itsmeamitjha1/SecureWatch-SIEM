@@ -16,6 +16,7 @@ import ZAP from "@/pages/zap";
 import Reports from "@/pages/reports";
 import Profile from "@/pages/profile";
 import Login from "@/pages/login";
+import AiAnalysis from "@/pages/ai-analysis";
 import NotFound from "@/pages/not-found";
 import { Loader2 } from "lucide-react";
 
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/zap" component={ZAP} />
       <Route path="/reports" component={Reports} />
       <Route path="/profile" component={Profile} />
+      <Route path="/ai-analysis" component={AiAnalysis} />
       <Route component={NotFound} />
     </Switch>
   );

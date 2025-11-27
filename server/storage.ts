@@ -1,6 +1,7 @@
 import {
   SecurityEvent,
   InsertSecurityEvent,
+  SecurityEventMetadata,
   Alert,
   InsertAlert,
   Incident,
@@ -19,13 +20,19 @@ import {
   InsertComplianceQuestion,
   ComplianceResponse,
   InsertComplianceResponse,
+  AiChatMessage,
+  InsertAiChatMessage,
+  AiAnalysisSession,
+  InsertAiAnalysisSession,
   User,
   UpsertUser,
   users,
+  aiChatMessages,
+  aiAnalysisSessions,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (required for Auth)
@@ -92,6 +99,14 @@ export interface IStorage {
   // Control update
   updateComplianceControl(id: string, updates: Partial<ComplianceControl>): Promise<ComplianceControl | undefined>;
   updateComplianceFramework(id: string, updates: Partial<ComplianceFramework>): Promise<ComplianceFramework | undefined>;
+
+  // AI Chat
+  getAiChatMessages(sessionId: string): Promise<AiChatMessage[]>;
+  createAiChatMessage(message: InsertAiChatMessage): Promise<AiChatMessage>;
+  getAiAnalysisSessions(userId?: string): Promise<AiAnalysisSession[]>;
+  getAiAnalysisSession(id: string): Promise<AiAnalysisSession | undefined>;
+  createAiAnalysisSession(session: InsertAiAnalysisSession): Promise<AiAnalysisSession>;
+  updateAiAnalysisSession(id: string, updates: Partial<AiAnalysisSession>): Promise<AiAnalysisSession | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -105,6 +120,8 @@ export class MemStorage implements IStorage {
   private vulnerabilities: Map<string, Vulnerability>;
   private complianceQuestions: Map<string, ComplianceQuestion>;
   private complianceResponses: Map<string, ComplianceResponse>;
+  private aiChatMessagesMap: Map<string, AiChatMessage>;
+  private aiAnalysisSessionsMap: Map<string, AiAnalysisSession>;
 
   constructor() {
     this.securityEvents = new Map();
@@ -117,6 +134,8 @@ export class MemStorage implements IStorage {
     this.vulnerabilities = new Map();
     this.complianceQuestions = new Map();
     this.complianceResponses = new Map();
+    this.aiChatMessagesMap = new Map();
+    this.aiAnalysisSessionsMap = new Map();
 
     this.seedDemoData();
   }
@@ -153,7 +172,7 @@ export class MemStorage implements IStorage {
   }
 
   private seedDemoData() {
-    // Security Events
+    // Security Events with enhanced detailed logging
     const eventTypes = [
       "Intrusion Attempt",
       "Authentication Failure",
@@ -163,6 +182,10 @@ export class MemStorage implements IStorage {
       "Port Scan",
       "DDoS Attack",
       "SQL Injection",
+      "Brute Force Attack",
+      "Privilege Escalation",
+      "Lateral Movement",
+      "Command and Control",
     ];
     const severities = ["Critical", "High", "Medium", "Low", "Info"];
     const sources = [
@@ -171,25 +194,118 @@ export class MemStorage implements IStorage {
       "172.16.0.25",
       "192.168.1.200",
       "10.0.1.75",
+      "203.0.113.42",
+      "198.51.100.78",
     ];
+    const destinations = [
+      "192.168.1.1",
+      "10.0.0.1",
+      "172.16.0.1",
+      "192.168.1.50",
+    ];
+    const categories = ["Network", "Authentication", "Malware", "Data Security", "Access Control", "Application"];
+    const actions = ["Block", "Allow", "Alert", "Quarantine", "Deny", "Drop"];
+    const statuses = ["Success", "Failure", "Pending", "Blocked"];
+    const tactics = ["Initial Access", "Execution", "Persistence", "Privilege Escalation", "Defense Evasion", "Credential Access", "Discovery", "Lateral Movement", "Collection", "Exfiltration", "Command and Control"];
+    const techniques = ["T1566", "T1059", "T1053", "T1055", "T1027", "T1110", "T1083", "T1021", "T1119", "T1048", "T1071"];
+    const protocols = ["TCP", "UDP", "HTTP", "HTTPS", "SSH", "FTP", "DNS", "SMTP", "RDP"];
+    const countries = ["United States", "Russia", "China", "Germany", "Brazil", "United Kingdom", "Netherlands", "France"];
+    const cities = ["New York", "Moscow", "Beijing", "Berlin", "Sao Paulo", "London", "Amsterdam", "Paris"];
+    const hostnames = ["web-server-01", "db-server-02", "app-server-03", "mail-server-01", "file-server-02", "workstation-045", "workstation-089"];
+    const osTypes = ["Windows Server 2019", "Ubuntu 22.04", "CentOS 8", "Windows 10", "macOS Ventura"];
+    const ruleNames = ["Suspicious Outbound Traffic", "Failed Login Threshold", "Malware Signature Match", "Data Loss Prevention", "Anomalous Network Activity", "Unauthorized Access Attempt"];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 75; i++) {
       const id = randomUUID();
       const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
       const severity = severities[Math.floor(Math.random() * severities.length)];
       const source = sources[Math.floor(Math.random() * sources.length)];
+      const destination = destinations[Math.floor(Math.random() * destinations.length)];
+      const category = categories[Math.floor(Math.random() * categories.length)];
+      const action = actions[Math.floor(Math.random() * actions.length)];
+      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      const tactic = tactics[Math.floor(Math.random() * tactics.length)];
+      const technique = techniques[Math.floor(Math.random() * techniques.length)];
+      const protocol = protocols[Math.floor(Math.random() * protocols.length)];
+      const ruleName = ruleNames[Math.floor(Math.random() * ruleNames.length)];
+      const hostname = hostnames[Math.floor(Math.random() * hostnames.length)];
+      const os = osTypes[Math.floor(Math.random() * osTypes.length)];
+
+      // Build enhanced metadata
+      const metadata: SecurityEventMetadata = {
+        protocol,
+        sourcePort: Math.floor(Math.random() * 65535),
+        destinationPort: [22, 80, 443, 3389, 445, 21, 25, 53, 3306, 5432][Math.floor(Math.random() * 10)],
+        bytesIn: Math.floor(Math.random() * 100000),
+        bytesOut: Math.floor(Math.random() * 50000),
+        packetsIn: Math.floor(Math.random() * 1000),
+        packetsOut: Math.floor(Math.random() * 500),
+        duration: Math.floor(Math.random() * 3600),
+        threatScore: severity === "Critical" ? 90 + Math.floor(Math.random() * 10) : 
+                     severity === "High" ? 70 + Math.floor(Math.random() * 20) :
+                     severity === "Medium" ? 40 + Math.floor(Math.random() * 30) :
+                     Math.floor(Math.random() * 40),
+        threatCategory: eventType.includes("Malware") ? "Malware" : 
+                       eventType.includes("Injection") ? "Web Attack" :
+                       eventType.includes("Authentication") ? "Credential Attack" : "Suspicious Activity",
+        sourceCountry: countries[Math.floor(Math.random() * countries.length)],
+        sourceCity: cities[Math.floor(Math.random() * cities.length)],
+        destinationCountry: "United States",
+        destinationCity: "New York",
+        hostName: hostname,
+        hostOs: os,
+        mitreTechnique: technique,
+        tags: [category.toLowerCase(), severity.toLowerCase(), action.toLowerCase()],
+        deviceVendor: ["Cisco", "Palo Alto", "Fortinet", "CrowdStrike", "SentinelOne"][Math.floor(Math.random() * 5)],
+        deviceProduct: ["Firewall", "EDR", "IDS", "SIEM", "WAF"][Math.floor(Math.random() * 5)],
+      };
+
+      // Add auth-specific metadata for authentication events
+      if (eventType.includes("Authentication") || eventType.includes("Access")) {
+        metadata.authMethod = ["Password", "MFA", "SSO", "Certificate", "API Key"][Math.floor(Math.random() * 5)];
+        metadata.authResult = status === "Success" ? "Success" : "Failure";
+        metadata.sessionId = randomUUID().substring(0, 8);
+      }
+
+      // Add file metadata for malware events
+      if (eventType.includes("Malware") || eventType.includes("Data")) {
+        metadata.fileName = ["invoice.pdf.exe", "report.docx", "setup.exe", "document.js", "payload.dll"][Math.floor(Math.random() * 5)];
+        metadata.filePath = `C:\\Users\\${hostname}\\Downloads\\`;
+        metadata.fileHash = randomUUID().replace(/-/g, "");
+        metadata.fileSize = Math.floor(Math.random() * 10000000);
+      }
+
+      // Add HTTP metadata for web attacks
+      if (eventType.includes("Injection") || eventType.includes("Exfiltration")) {
+        metadata.httpMethod = ["GET", "POST", "PUT", "DELETE"][Math.floor(Math.random() * 4)];
+        metadata.httpStatusCode = [200, 401, 403, 404, 500][Math.floor(Math.random() * 5)];
+        metadata.url = `/api/v1/${["users", "data", "admin", "config", "export"][Math.floor(Math.random() * 5)]}`;
+        metadata.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+      }
+
+      // Generate realistic raw log
+      const rawLog = `${new Date().toISOString()} ${hostname} ${metadata.deviceProduct || "SIEM"}: [${severity}] ${eventType} - src=${source}:${metadata.sourcePort} dst=${destination}:${metadata.destinationPort} proto=${protocol} action=${action} rule="${ruleName}" user=${Math.random() > 0.5 ? `user${Math.floor(Math.random() * 10)}` : "-"} msg="${eventType} detected from ${source}"`;
       
       this.securityEvents.set(id, {
         id,
-        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
+        timestamp: new Date(Date.now() - Math.random() * 72 * 60 * 60 * 1000), // Last 3 days
         eventType,
         severity,
         source,
-        destination: "192.168.1.1",
+        destination,
         user: Math.random() > 0.5 ? `user${Math.floor(Math.random() * 10)}` : null,
-        description: `${eventType} detected from ${source}`,
+        description: `${eventType} detected from ${source} targeting ${destination}`,
         ipAddress: source,
-        details: `Detailed information about ${eventType.toLowerCase()}`,
+        details: `Detected ${eventType.toLowerCase()} activity. Threat score: ${metadata.threatScore}. ${metadata.threatCategory} attack pattern identified.`,
+        action,
+        status,
+        category,
+        ruleId: `RULE-${Math.floor(Math.random() * 9000) + 1000}`,
+        ruleName,
+        tactic,
+        technique,
+        rawLog,
+        metadata,
       });
     }
 
@@ -814,6 +930,82 @@ export class MemStorage implements IStorage {
     const updated = { ...framework, ...updates };
     this.complianceFrameworks.set(id, updated);
     return updated;
+  }
+
+  // AI Chat Messages - using PostgreSQL for persistence
+  async getAiChatMessages(sessionId: string): Promise<AiChatMessage[]> {
+    try {
+      const messages = await db
+        .select()
+        .from(aiChatMessages)
+        .where(eq(aiChatMessages.sessionId, sessionId))
+        .orderBy(aiChatMessages.timestamp);
+      return messages;
+    } catch {
+      return [];
+    }
+  }
+
+  async createAiChatMessage(message: InsertAiChatMessage): Promise<AiChatMessage> {
+    const [newMessage] = await db
+      .insert(aiChatMessages)
+      .values(message)
+      .returning();
+    return newMessage;
+  }
+
+  // AI Analysis Sessions - using PostgreSQL for persistence
+  async getAiAnalysisSessions(userId?: string): Promise<AiAnalysisSession[]> {
+    try {
+      if (userId) {
+        const sessions = await db
+          .select()
+          .from(aiAnalysisSessions)
+          .where(eq(aiAnalysisSessions.userId, userId))
+          .orderBy(desc(aiAnalysisSessions.updatedAt));
+        return sessions;
+      }
+      const sessions = await db
+        .select()
+        .from(aiAnalysisSessions)
+        .orderBy(desc(aiAnalysisSessions.updatedAt));
+      return sessions;
+    } catch {
+      return [];
+    }
+  }
+
+  async getAiAnalysisSession(id: string): Promise<AiAnalysisSession | undefined> {
+    try {
+      const [session] = await db
+        .select()
+        .from(aiAnalysisSessions)
+        .where(eq(aiAnalysisSessions.id, id));
+      return session;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async createAiAnalysisSession(session: InsertAiAnalysisSession): Promise<AiAnalysisSession> {
+    const [newSession] = await db
+      .insert(aiAnalysisSessions)
+      .values(session)
+      .returning();
+    return newSession;
+  }
+
+  async updateAiAnalysisSession(id: string, updates: Partial<AiAnalysisSession>): Promise<AiAnalysisSession | undefined> {
+    try {
+      const [updated] = await db
+        .update(aiAnalysisSessions)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(aiAnalysisSessions.id, id))
+        .returning();
+      return updated;
+    } catch {
+      return undefined;
+    }
   }
 }
 

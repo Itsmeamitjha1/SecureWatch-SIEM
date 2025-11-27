@@ -10,6 +10,7 @@ import {
   User,
   LogIn,
   LogOut,
+  Bot,
 } from "lucide-react";
 import {
   Sidebar,
@@ -41,6 +42,11 @@ const menuItems = [
     title: "Security Events",
     url: "/events",
     icon: Activity,
+  },
+  {
+    title: "AI Analysis",
+    url: "/ai-analysis",
+    icon: Bot,
   },
   {
     title: "Alerts",

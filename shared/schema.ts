@@ -31,7 +31,8 @@ export const users = pgTable("users", {
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
-// Security Events
+// Security Events - Enhanced with detailed logging fields
+// Core indexed columns for fast queries, with JSONB metadata for flexible extended data
 export const securityEvents = pgTable("security_events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   timestamp: timestamp("timestamp").notNull().defaultNow(),
@@ -43,11 +44,133 @@ export const securityEvents = pgTable("security_events", {
   description: text("description").notNull(),
   ipAddress: text("ip_address"),
   details: text("details"),
+  // Core indexed fields for common queries
+  action: text("action"),
+  status: text("status"),
+  category: text("category"),
+  ruleId: text("rule_id"),
+  ruleName: text("rule_name"),
+  tactic: text("tactic"),
+  technique: text("technique"),
+  // Raw log for full-text search and AI analysis
+  rawLog: text("raw_log"),
+  // JSONB metadata for flexible extended data
+  metadata: jsonb("metadata"),
 });
 
 export const insertSecurityEventSchema = createInsertSchema(securityEvents).omit({ id: true });
 export type InsertSecurityEvent = z.infer<typeof insertSecurityEventSchema>;
 export type SecurityEvent = typeof securityEvents.$inferSelect;
+
+// Type for the metadata JSONB structure
+export interface SecurityEventMetadata {
+  // Network details
+  protocol?: string;
+  sourcePort?: number;
+  destinationPort?: number;
+  bytesIn?: number;
+  bytesOut?: number;
+  packetsIn?: number;
+  packetsOut?: number;
+  duration?: number;
+  // Threat intelligence
+  threatIndicator?: string;
+  threatCategory?: string;
+  threatScore?: number;
+  iocType?: string;
+  iocValue?: string;
+  // Geo data
+  sourceCountry?: string;
+  sourceCity?: string;
+  sourceLatitude?: number;
+  sourceLongitude?: number;
+  destinationCountry?: string;
+  destinationCity?: string;
+  // Process info
+  processName?: string;
+  processId?: number;
+  parentProcessName?: string;
+  parentProcessId?: number;
+  commandLine?: string;
+  // Host info
+  hostName?: string;
+  hostOs?: string;
+  hostIp?: string;
+  // MITRE ATT&CK
+  mitreTechnique?: string;
+  mitreSubtechnique?: string;
+  mitreTacticId?: string;
+  // Authentication
+  authMethod?: string;
+  authResult?: string;
+  sessionId?: string;
+  // File context
+  fileName?: string;
+  filePath?: string;
+  fileHash?: string;
+  fileSize?: number;
+  fileType?: string;
+  // HTTP/Web
+  userAgent?: string;
+  httpMethod?: string;
+  httpStatusCode?: number;
+  url?: string;
+  referrer?: string;
+  requestBody?: string;
+  responseSize?: number;
+  // Device info
+  deviceVendor?: string;
+  deviceProduct?: string;
+  deviceVersion?: string;
+  // Additional
+  tags?: string[];
+  correlationId?: string;
+  relatedEventIds?: string[];
+  enrichments?: Record<string, unknown>;
+}
+
+// AI Chat Messages for log analysis
+export const aiChatMessages = pgTable("ai_chat_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionId: text("session_id").notNull(),
+  userId: text("user_id"),
+  role: text("role").notNull(), // "user" | "assistant" | "system"
+  content: text("content").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  // JSONB for flexible context storage
+  context: jsonb("context"),
+  tokenCount: integer("token_count"),
+});
+
+export const insertAiChatMessageSchema = createInsertSchema(aiChatMessages).omit({ id: true, timestamp: true });
+export type InsertAiChatMessage = z.infer<typeof insertAiChatMessageSchema>;
+export type AiChatMessage = typeof aiChatMessages.$inferSelect;
+
+// Type for chat message context
+export interface ChatMessageContext {
+  eventIds?: string[];
+  filters?: {
+    severity?: string[];
+    eventType?: string[];
+    timeRange?: { start: string; end: string };
+  };
+  analysisType?: string;
+  insights?: Record<string, unknown>;
+}
+
+// AI Analysis Sessions
+export const aiAnalysisSessions = pgTable("ai_analysis_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id"),
+  title: text("title").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  status: text("status").notNull().default("active"),
+});
+
+export const insertAiAnalysisSessionSchema = createInsertSchema(aiAnalysisSessions).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertAiAnalysisSession = z.infer<typeof insertAiAnalysisSessionSchema>;
+export type AiAnalysisSession = typeof aiAnalysisSessions.$inferSelect;
 
 // Alerts
 export const alerts = pgTable("alerts", {
