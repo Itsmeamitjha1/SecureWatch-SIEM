@@ -173,3 +173,39 @@ export const vulnerabilities = pgTable("vulnerabilities", {
 export const insertVulnerabilitySchema = createInsertSchema(vulnerabilities).omit({ id: true });
 export type InsertVulnerability = z.infer<typeof insertVulnerabilitySchema>;
 export type Vulnerability = typeof vulnerabilities.$inferSelect;
+
+// Compliance Questions
+export const complianceQuestions = pgTable("compliance_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  frameworkId: text("framework_id").notNull(),
+  controlId: text("control_id").notNull(),
+  questionNumber: integer("question_number").notNull(),
+  question: text("question").notNull(),
+  category: text("category").notNull(),
+  guidance: text("guidance"),
+  evidenceRequired: boolean("evidence_required").notNull().default(true),
+});
+
+export const insertComplianceQuestionSchema = createInsertSchema(complianceQuestions).omit({ id: true });
+export type InsertComplianceQuestion = z.infer<typeof insertComplianceQuestionSchema>;
+export type ComplianceQuestion = typeof complianceQuestions.$inferSelect;
+
+// Compliance Responses (user answers to questions)
+export const complianceResponses = pgTable("compliance_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  questionId: text("question_id").notNull(),
+  frameworkId: text("framework_id").notNull(),
+  controlId: text("control_id").notNull(),
+  status: text("status").notNull(), // "Compliant", "Partially Compliant", "Non-Compliant", "Not Applicable"
+  response: text("response"),
+  evidence: text("evidence"),
+  evidenceFiles: text("evidence_files"),
+  reviewer: text("reviewer"),
+  reviewDate: timestamp("review_date"),
+  notes: text("notes"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertComplianceResponseSchema = createInsertSchema(complianceResponses).omit({ id: true, updatedAt: true });
+export type InsertComplianceResponse = z.infer<typeof insertComplianceResponseSchema>;
+export type ComplianceResponse = typeof complianceResponses.$inferSelect;
