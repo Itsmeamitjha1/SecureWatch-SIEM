@@ -15,6 +15,10 @@ import {
   InsertZapScan,
   Vulnerability,
   InsertVulnerability,
+  ComplianceQuestion,
+  InsertComplianceQuestion,
+  ComplianceResponse,
+  InsertComplianceResponse,
   User,
   UpsertUser,
   users,
@@ -68,6 +72,24 @@ export interface IStorage {
   getVulnerabilities(): Promise<Vulnerability[]>;
   getVulnerability(id: string): Promise<Vulnerability | undefined>;
   createVulnerability(vuln: InsertVulnerability): Promise<Vulnerability>;
+
+  // Compliance Questions
+  getComplianceQuestions(): Promise<ComplianceQuestion[]>;
+  getComplianceQuestionsByFramework(frameworkId: string): Promise<ComplianceQuestion[]>;
+  getComplianceQuestion(id: string): Promise<ComplianceQuestion | undefined>;
+  createComplianceQuestion(question: InsertComplianceQuestion): Promise<ComplianceQuestion>;
+
+  // Compliance Responses
+  getComplianceResponses(): Promise<ComplianceResponse[]>;
+  getComplianceResponsesByFramework(frameworkId: string): Promise<ComplianceResponse[]>;
+  getComplianceResponse(id: string): Promise<ComplianceResponse | undefined>;
+  createComplianceResponse(response: InsertComplianceResponse): Promise<ComplianceResponse>;
+  updateComplianceResponse(id: string, updates: Partial<ComplianceResponse>): Promise<ComplianceResponse | undefined>;
+  upsertComplianceResponse(response: InsertComplianceResponse): Promise<ComplianceResponse>;
+
+  // Control update
+  updateComplianceControl(id: string, updates: Partial<ComplianceControl>): Promise<ComplianceControl | undefined>;
+  updateComplianceFramework(id: string, updates: Partial<ComplianceFramework>): Promise<ComplianceFramework | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -79,6 +101,8 @@ export class MemStorage implements IStorage {
   private riskAssessments: Map<string, RiskAssessment>;
   private zapScans: Map<string, ZapScan>;
   private vulnerabilities: Map<string, Vulnerability>;
+  private complianceQuestions: Map<string, ComplianceQuestion>;
+  private complianceResponses: Map<string, ComplianceResponse>;
 
   constructor() {
     this.securityEvents = new Map();
@@ -89,6 +113,8 @@ export class MemStorage implements IStorage {
     this.riskAssessments = new Map();
     this.zapScans = new Map();
     this.vulnerabilities = new Map();
+    this.complianceQuestions = new Map();
+    this.complianceResponses = new Map();
 
     this.seedDemoData();
   }
@@ -373,6 +399,118 @@ export class MemStorage implements IStorage {
         }
       }
     }
+
+    // Seed Compliance Questions for each framework
+    this.seedComplianceQuestions();
+  }
+
+  private seedComplianceQuestions() {
+    const frameworkIds = Array.from(this.complianceFrameworks.keys());
+    const frameworkNames = Array.from(this.complianceFrameworks.values()).map(f => f.name);
+
+    // NIST Cybersecurity Framework Questions
+    const nistQuestions = [
+      { category: "Identify", question: "Does your organization maintain an inventory of all hardware assets?", guidance: "Maintain a complete and accurate inventory of physical devices, systems, platforms, and applications." },
+      { category: "Identify", question: "Is there a process for identifying and documenting data flows?", guidance: "Document how data moves through the organization, including external data sharing." },
+      { category: "Identify", question: "Are asset vulnerabilities identified and documented?", guidance: "Implement vulnerability scanning and maintain vulnerability documentation." },
+      { category: "Protect", question: "Is access to systems and assets managed through identity management?", guidance: "Implement identity management including unique user IDs and authentication." },
+      { category: "Protect", question: "Is sensitive data encrypted at rest and in transit?", guidance: "Use encryption for data protection aligned with organizational policies." },
+      { category: "Protect", question: "Are security awareness training programs implemented for all personnel?", guidance: "Conduct regular security awareness training for all employees." },
+      { category: "Detect", question: "Is continuous security monitoring implemented?", guidance: "Monitor the network and physical environment to detect security events." },
+      { category: "Detect", question: "Are anomalies and events detected and analyzed?", guidance: "Implement detection processes for anomalous activity." },
+      { category: "Respond", question: "Is there an incident response plan in place?", guidance: "Maintain an incident response plan that is tested and updated regularly." },
+      { category: "Respond", question: "Are incident response activities coordinated with stakeholders?", guidance: "Coordinate response activities with internal and external stakeholders." },
+      { category: "Recover", question: "Is there a recovery plan in place for cybersecurity incidents?", guidance: "Maintain and test a recovery plan for restoring systems and data." },
+      { category: "Recover", question: "Are lessons learned incorporated into future response planning?", guidance: "Incorporate lessons learned into recovery strategy improvements." },
+    ];
+
+    // ISO 27001 Questions
+    const isoQuestions = [
+      { category: "Information Security Policies", question: "Are information security policies defined and approved by management?", guidance: "A set of policies for information security shall be defined and approved by management." },
+      { category: "Information Security Policies", question: "Are security policies reviewed at planned intervals?", guidance: "Policies shall be reviewed at planned intervals or when significant changes occur." },
+      { category: "Organization of Information Security", question: "Are information security responsibilities defined and allocated?", guidance: "All information security responsibilities shall be defined and allocated." },
+      { category: "Human Resource Security", question: "Are background verification checks conducted on candidates?", guidance: "Background verification checks shall be carried out on all candidates for employment." },
+      { category: "Human Resource Security", question: "Do employees receive security awareness education and training?", guidance: "All employees shall receive appropriate awareness education and training." },
+      { category: "Asset Management", question: "Are assets associated with information identified and inventoried?", guidance: "Assets associated with information and processing facilities shall be identified." },
+      { category: "Access Control", question: "Is there an access control policy based on business requirements?", guidance: "An access control policy shall be established based on business and security requirements." },
+      { category: "Access Control", question: "Is user access provisioned through a formal registration process?", guidance: "A formal user registration and de-registration process shall be implemented." },
+      { category: "Cryptography", question: "Is there a policy on the use of cryptographic controls?", guidance: "A policy on the use of cryptographic controls shall be developed and implemented." },
+      { category: "Operations Security", question: "Are operating procedures documented and available?", guidance: "Operating procedures shall be documented and made available to all users who need them." },
+      { category: "Communications Security", question: "Are networks managed and controlled to protect information?", guidance: "Networks shall be managed and controlled to protect information in systems." },
+      { category: "Incident Management", question: "Are information security events reported through appropriate channels?", guidance: "Information security events shall be reported through appropriate management channels." },
+    ];
+
+    // SOC 2 Questions
+    const socQuestions = [
+      { category: "Security", question: "Are logical and physical access controls implemented?", guidance: "The entity implements logical access security software, infrastructure, and architectures." },
+      { category: "Security", question: "Is there a process for system account management?", guidance: "New internal and external users are registered and authorized prior to being issued system credentials." },
+      { category: "Security", question: "Are system components protected against malicious software?", guidance: "The entity implements controls to prevent or detect and act upon the introduction of unauthorized software." },
+      { category: "Availability", question: "Is system availability monitored against commitments?", guidance: "The entity monitors system capacity and performance against commitments." },
+      { category: "Availability", question: "Are backup and recovery procedures tested?", guidance: "The entity tests backup and restoration procedures to verify they meet the entity's objectives." },
+      { category: "Availability", question: "Is there a business continuity plan in place?", guidance: "The entity implements a business continuity plan to ensure continued service." },
+      { category: "Processing Integrity", question: "Are data processing inputs validated for completeness?", guidance: "Data received for processing is validated to be complete and accurate." },
+      { category: "Processing Integrity", question: "Is processing monitored for errors and exceptions?", guidance: "Processing is monitored to ensure operations are complete and accurate." },
+      { category: "Confidentiality", question: "Is confidential information identified and classified?", guidance: "Confidential information is identified and the entity confirms the identity of users." },
+      { category: "Confidentiality", question: "Is confidential information disposed of securely?", guidance: "Confidential information is disposed of securely when no longer needed." },
+      { category: "Privacy", question: "Is personal information collected only for identified purposes?", guidance: "The entity collects personal information only for the purposes identified in its privacy notice." },
+      { category: "Privacy", question: "Is personal information retained only as long as necessary?", guidance: "The entity retains personal information for only as long as necessary to fulfill the stated purposes." },
+    ];
+
+    // Get framework IDs by name
+    const nistFrameworkId = frameworkIds[frameworkNames.findIndex(n => n.includes("NIST"))];
+    const isoFrameworkId = frameworkIds[frameworkNames.findIndex(n => n.includes("ISO"))];
+    const socFrameworkId = frameworkIds[frameworkNames.findIndex(n => n.includes("SOC"))];
+
+    // Seed NIST questions
+    if (nistFrameworkId) {
+      nistQuestions.forEach((q, idx) => {
+        const id = randomUUID();
+        this.complianceQuestions.set(id, {
+          id,
+          frameworkId: nistFrameworkId,
+          controlId: `NIST-${q.category.substring(0, 2).toUpperCase()}-${idx + 1}`,
+          questionNumber: idx + 1,
+          question: q.question,
+          category: q.category,
+          guidance: q.guidance,
+          evidenceRequired: true,
+        });
+      });
+    }
+
+    // Seed ISO questions
+    if (isoFrameworkId) {
+      isoQuestions.forEach((q, idx) => {
+        const id = randomUUID();
+        this.complianceQuestions.set(id, {
+          id,
+          frameworkId: isoFrameworkId,
+          controlId: `ISO-A.${Math.floor(idx / 2) + 5}.${(idx % 2) + 1}`,
+          questionNumber: idx + 1,
+          question: q.question,
+          category: q.category,
+          guidance: q.guidance,
+          evidenceRequired: true,
+        });
+      });
+    }
+
+    // Seed SOC 2 questions
+    if (socFrameworkId) {
+      socQuestions.forEach((q, idx) => {
+        const id = randomUUID();
+        this.complianceQuestions.set(id, {
+          id,
+          frameworkId: socFrameworkId,
+          controlId: `SOC-${q.category.substring(0, 2).toUpperCase()}-${idx + 1}`,
+          questionNumber: idx + 1,
+          question: q.question,
+          category: q.category,
+          guidance: q.guidance,
+          evidenceRequired: true,
+        });
+      });
+    }
   }
 
   // Security Events
@@ -571,6 +709,99 @@ export class MemStorage implements IStorage {
     const newVuln: Vulnerability = { id, ...vuln };
     this.vulnerabilities.set(id, newVuln);
     return newVuln;
+  }
+
+  // Compliance Questions
+  async getComplianceQuestions(): Promise<ComplianceQuestion[]> {
+    return Array.from(this.complianceQuestions.values()).sort(
+      (a, b) => a.questionNumber - b.questionNumber
+    );
+  }
+
+  async getComplianceQuestionsByFramework(frameworkId: string): Promise<ComplianceQuestion[]> {
+    return Array.from(this.complianceQuestions.values())
+      .filter(q => q.frameworkId === frameworkId)
+      .sort((a, b) => a.questionNumber - b.questionNumber);
+  }
+
+  async getComplianceQuestion(id: string): Promise<ComplianceQuestion | undefined> {
+    return this.complianceQuestions.get(id);
+  }
+
+  async createComplianceQuestion(question: InsertComplianceQuestion): Promise<ComplianceQuestion> {
+    const id = randomUUID();
+    const newQuestion: ComplianceQuestion = { id, ...question };
+    this.complianceQuestions.set(id, newQuestion);
+    return newQuestion;
+  }
+
+  // Compliance Responses
+  async getComplianceResponses(): Promise<ComplianceResponse[]> {
+    return Array.from(this.complianceResponses.values());
+  }
+
+  async getComplianceResponsesByFramework(frameworkId: string): Promise<ComplianceResponse[]> {
+    return Array.from(this.complianceResponses.values())
+      .filter(r => r.frameworkId === frameworkId);
+  }
+
+  async getComplianceResponse(id: string): Promise<ComplianceResponse | undefined> {
+    return this.complianceResponses.get(id);
+  }
+
+  async createComplianceResponse(response: InsertComplianceResponse): Promise<ComplianceResponse> {
+    const id = randomUUID();
+    const newResponse: ComplianceResponse = {
+      id,
+      ...response,
+      updatedAt: new Date(),
+    };
+    this.complianceResponses.set(id, newResponse);
+    return newResponse;
+  }
+
+  async updateComplianceResponse(id: string, updates: Partial<ComplianceResponse>): Promise<ComplianceResponse | undefined> {
+    const response = this.complianceResponses.get(id);
+    if (!response) return undefined;
+
+    const updated = {
+      ...response,
+      ...updates,
+      updatedAt: new Date(),
+    };
+    this.complianceResponses.set(id, updated);
+    return updated;
+  }
+
+  async upsertComplianceResponse(response: InsertComplianceResponse): Promise<ComplianceResponse> {
+    // Find existing response by questionId
+    const existing = Array.from(this.complianceResponses.values())
+      .find(r => r.questionId === response.questionId);
+    
+    if (existing) {
+      return this.updateComplianceResponse(existing.id, response) as Promise<ComplianceResponse>;
+    }
+    return this.createComplianceResponse(response);
+  }
+
+  // Update Compliance Control
+  async updateComplianceControl(id: string, updates: Partial<ComplianceControl>): Promise<ComplianceControl | undefined> {
+    const control = this.complianceControls.get(id);
+    if (!control) return undefined;
+
+    const updated = { ...control, ...updates };
+    this.complianceControls.set(id, updated);
+    return updated;
+  }
+
+  // Update Compliance Framework
+  async updateComplianceFramework(id: string, updates: Partial<ComplianceFramework>): Promise<ComplianceFramework | undefined> {
+    const framework = this.complianceFrameworks.get(id);
+    if (!framework) return undefined;
+
+    const updated = { ...framework, ...updates };
+    this.complianceFrameworks.set(id, updated);
+    return updated;
   }
 }
 
