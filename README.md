@@ -62,6 +62,7 @@ cd securewatch-siem
 2. Install dependencies:
 ```bash
 npm install
+npm install --save-dev cross-env
 ```
 
 3. Set up the database:
